@@ -68,7 +68,8 @@ int execute_service(const int fd, const struct service_struct svc_struct)
 	bzero(buffer, BUF_SIZE);
 
 	while (fgets(buffer, BUF_SIZE, fp) != NULL) {
-		nbytes = send(fd, buffer, BUF_SIZE, 0);
+		buffer[BUF_SIZE-1]='\n';
+                nbytes = send(fd, buffer, BUF_SIZE, 0);
 
 		printf("%s", buffer);
 
