@@ -58,7 +58,9 @@ int execute_service(const int fd, const struct service_struct svc_struct)
 	/* get service command */
 	if (get_svc_cmdline(svc_struct, cmdline) < 0)
 		return -1;
-
+        //printf("%s",cmdline);
+        //printf("one command!");
+        
 	fp = popen(cmdline, "r");
 	if (fp == NULL) {
 		printf("[Error] : failure to run command at %d, %s\n", __LINE__, __FILE__);
@@ -66,11 +68,12 @@ int execute_service(const int fd, const struct service_struct svc_struct)
 	}
 
 	bzero(buffer, BUF_SIZE);
-
+        int i=0;
 	while (fgets(buffer, BUF_SIZE, fp) != NULL) {
 		buffer[BUF_SIZE-1]='\n';
                 nbytes = send(fd, buffer, BUF_SIZE, 0);
-
+                //i++;
+                //printf("This is a Line: ");
 		printf("%s", buffer);
 
 		if (nbytes < 0)
@@ -115,7 +118,8 @@ int execute_service_2(const int fd, const struct service_struct svc_struct)
     }
 
 	while (fgets(buffer, BUF_SIZE, fp) != NULL) {
-		printf("%s", buffer);
+	    printf("This is a Line: ");	
+            printf("%s", buffer);
 	    count += fwrite(buffer, 1, strlen(buffer), fpout);
 		bzero(buffer, BUF_SIZE);
 	}

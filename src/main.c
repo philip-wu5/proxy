@@ -30,6 +30,8 @@ static int check_service_type(struct service_struct *svc_struct);
 
 static void dump_svc(struct service_struct* svc_struct);
 
+static int train_command(char *orginal, char *cmd);
+
 extern int execute_service(const int fd, const struct service_struct svc_struct);
 
 static int server_num;
@@ -339,8 +341,10 @@ static int get_command_line(const int fd, struct service_struct* svc_struct)
 		}
 
 		bzero(svc_struct->cmdline, CMD_LINE_LEN);
-		strncpy(svc_struct->cmdline, cmdbuf, CMD_LINE_LEN);
+		train_command(cmdbuf,svc_struct->cmdline);
+                //strncpy(svc_struct->cmdline, cmdbuf, CMD_LINE_LEN);
 	}
+        //printf("[Debug] : %s", cmdbuf);
 	return 1;
 }
 
@@ -417,4 +421,24 @@ static unsigned int get_server_num(const unsigned int svr_code)
 static unsigned int get_service_type(const unsigned int svr_code)
 {
 	return svr_code & ((1 << OFFSET_SERVER_TYPE)-1);
+}
+
+static int train_command(char *str, char *cmd)
+{
+       int index=0;
+       int line=0;
+       int i=0;
+       for( ;i<CMD_LINE_LEN;i++){
+            if(str[i]=='\n'||str[i]=='\r')
+               {
+                   line=1;
+                   index=i;break;
+               }
+       }
+       if(line!=1){
+         printf("[ERROR] : Incomplete command!");
+         return -1; 
+         }
+       strncpy(cmd,str,index);
+       return 1;
 }
